@@ -7,45 +7,62 @@ info:
 servers:
   - url: "http://localhost:4200"
     description: "Development server"
+tags:
+  - name: Usuarios
+  - name: Usuario único
 
 paths:
-  "/singin":
-    post:
-      summary: "User Sign In and return the Token"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  description: "User email"
-                  example: "javimuruzabal@hotmail.com"
-                password:
-                  type: string
-                  description: "User password"
-                  example: "******"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  token:
-                    type: string
-                    example: "uhehrioiqwefhoqwhvpouqvuogwqhe0ihw0ovewgwg"
-
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "500":
-          $ref: "#/components/responses/ServerError"
   "/users":
     get:
+      tags:
+        - Usuarios
       summary: "Return all Users"
+      parameters:
+        - in: query
+          name: gender
+          description: Género del usuario
+          schema:
+            type: string
+        - in: query
+          name: username
+          description: Alias del usuario
+          schema:
+            type: string
+        - in: query
+          name: firstname
+          description: Nombre real del usuario
+          schema:
+            type: string
+        - in: query
+          name: lastname
+          description: Apellido del usuario
+          schema:
+            type: string
+        - in: query
+          name: email
+          description: Correo del usuario
+          schema:
+            type: string
+        - in: query
+          name: age
+          description: Edad del usuario
+          schema:
+            type: number
+        - in: query
+          name: postalcode
+          description: Código postal del usuario
+          schema:
+            type: number
+        - in: query
+          name: city
+          description: Ciudad del usuario
+          schema:
+            type: string
+        - in: query
+          name: country
+          description: País del usuario
+          schema:
+            type: string
       responses:
         "200":
           description: OK
@@ -54,30 +71,49 @@ paths:
               schema:
                 type: array
                 description: "All Media in Common"
-                example: "[{id: 1, userName: Javi, userLastName: Muruzabal... },...]"
+                items: 
+                  $ref: "#/components/schemas/User"
+        "204":
+          content:
+          description: "No content"
         "400":
           $ref: "#/components/responses/BadRequest"
         "500":
           $ref: "#/components/responses/ServerError"
     post:
+      tags:
+        - Usuarios
       summary: "Insert a new User"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Email:
-                  type: string
-                  description: "User email"
-                  example: "javimuruzabal@hotmail.com"
-                Password:
-                  type: string
-                  description: "User password"
-                  example: "******"
+      parameters:
+        - in: body
+          required: true
+          name: body
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+                example: PepitoPerez
+              firstname:
+                type: string
+                example: Pepito
+              lastname:
+                type: string
+                example: Pérez
+              email:
+                type: string
+                example: pepito@perez.com
+              birthday:
+                type: string
+                format: date-time
+              city:
+                type: string
+                example: Madrid
+              country:
+                type: string
+                example: España
       responses:
-        "200":
+        "201":
           $ref: "#/components/responses/Ok"
         "400":
           $ref: "#/components/responses/BadRequest"
@@ -85,38 +121,35 @@ paths:
           $ref: "#/components/responses/ServerError"
   "/users/{:userId}":
     get:
+      tags: 
+        -  Usuario único
       summary: "Returns all infoarmation of the selected User"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
-          $ref: "#/components/responses/Ok"
+          description: Ok
           content: 
             application/json:
               schema:
-                type: object
-                properties:
-                  users:
-                    type: array
-                    items:
-                      $ref: "#/components/schemas/User"
+                $ref: "#/components/schemas/UserInfo"
         "404": 
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-    put:
-      summary: "Updates the User info"
+    patch:
+      tags:
+        - Usuario único
+      summary: "Updates the User entity"
       parameters:
         - $ref: "#/components/parameters/userId"
       requestBody:
+        description: User data to patch
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                Info:
-                  $ref: "#/components/schemas/User"
+              $ref: "#/components/schemas/UserInfo"
       responses:
         "200":
           $ref: "#/components/responses/Ok"
@@ -127,11 +160,13 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
     delete:
+      tags:
+        - Usuario único
       summary: "Delete the selected User"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
-        "200":
+        "204":
           $ref: "#/components/responses/Deleted"
         "400":
           $ref: "#/components/responses/BadRequest"
@@ -139,88 +174,25 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/recent":
-    put:
-      summary: "Update the recent media watch/listen by User"
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                Info:
-                  $ref: "#/components/schemas/User"
-      responses:
-        "200":
-          $ref: "#/components/responses/Ok"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-    delete:
-      summary: "Delete the selected User"
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      responses:
-        "200":
-          $ref: "#/components/responses/Deleted"
-        "400":
-          $ref: "#/components/responses/BadRequest"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-  "/users/{userId}/info":
+  "/users/{userID}/matches":
     get:
-      summary: "Returns User's Information"
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserInfo"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-  "/users/{userId}/matches":
-    get:
+      tags:
+        - Usuario único
       summary: "Returns User's Matches"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
-        "200":
+        200:
+          description: Ok
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserMatches"
-        "404":
+        404:
           $ref: "#/components/responses/NotFound"
-        "500":
+        500:
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/lastGeo":
-    get:
-      summary: "Returns User's Last Localization"
-      parameters:
-        - $ref: "#/components/parameters/userId"
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserGeo"
-        "404":
-          $ref: "#/components/responses/NotFound"
-        "500":
-          $ref: "#/components/responses/ServerError"
-  "/users/{userId}/favourites":
+  "/users/{userID}/favourites":
     get:
       summary: "Returns User's Favourites"
       parameters:
@@ -471,53 +443,53 @@ components:
       required:
         - ID
     UserInfo:
-      description: "All information related to the selected list"
+      description: "All information related to the selected user"
       properties:
-        UserName:
+        username:
           type: string
           description: "User nick name"
           example: "JaviMuru"
-        FirstName:
+        firstname:
           type: string
           description: "User name"
           example: "Javi"
-        LastName:
+        lastname:
           type: string
           description: "User Surname"
           example: "Muruzábal"
-        Email:
+        email:
           type: string
           description: "User email"
           example: "javimuruzabal@hotmail.com"
-        Birthday:
+        birthday:
           type: string
           description: "User birthday"
           example: "14-06-2000"
-        PostalCode:
+        postalcode:
           type: number
           description: "User ZIP Code Residency"
           example: "31500"
-        City:
+        city:
           type: number
           description: "User City"
           example: "Pamplona"
-        Country:
+        country:
           type: number
           description: "User Country"
           example: "Spain"
-        Address:
+        address:
           type: number
           description: "User Address"
           example: "Mayor Street"
-        Gender:
+        gender:
           type: number
           description: "User Gender"
           example: "Male"
-        Phone:
+        phone:
           type: number
           description: "User Phone"
           example: "666666666"
-        Image:
+        image:
           type: number
           description: "User Profile Image"
           example: "profile.png"
