@@ -322,32 +322,28 @@ components:
       description: 'The user ID'
       required: true
       schema:
-        type: number
-        minimum: 1
+        type: string
     seriesId:
       in: path
       name: seriesID
       description: 'The series ID'
       required: true
       schema:
-        type: number
-        minimum: 1
+        type: string
     movieId:
       in: path
       name: movieID
       description: 'The movie ID'
       required: true
       schema:
-        type: number
-        minimum: 1
+        type: string
     listId:
       in: path
       name: listID
       description: 'The list ID'
       required: true
       schema:
-        type: integer
-        minimum: 1
+        type: string
   schemas:
     info:
       description: 'All information related to the selected list'
@@ -367,7 +363,7 @@ components:
     list:
       properties:
         ID:
-          type: number
+          type: string
           description: 'Unique identifies assigned to the list'
         Info:
           description: 'All information related to the selected list'
@@ -385,7 +381,7 @@ components:
               description: 'Short description provided by the owner'
               example: 'My favourite movies for the last 10 years'
         Owner:
-          type: number
+          type: string
           description: 'The list owner''s user id'
         IsPublic:
           type: boolean
@@ -393,19 +389,19 @@ components:
         Movies:
           type: array
           items:
-            type: number
+            type: string
             example: '[id, id, ...]'
             description: 'All the movies'' ids listed'
         Series:
           type: array
           items:
-            type: number
+            type: string
             example: '[id, id, ...]'
             description: 'All the series'' ids listed'
         Users:
           type: array
           items:
-            type: number
+            type: string
             example: '[id, id, ...]'
             description: 'All the users'' ids of people who follow the list'
         Rating:
