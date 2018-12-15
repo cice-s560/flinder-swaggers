@@ -1,0 +1,426 @@
+openapi: 3.0.0
+info:
+  title: 'Flinder'
+  description: 'Flinder is what happens when there are no girls in the classroom'
+  version: 1.0.0
+  
+servers:
+  - url: 'http://localhost:4200/v1'
+    description: 'Development server'
+    
+paths:
+  '/lists':
+    get:
+      tags:
+        - Lists
+      summary: 'Returns all the lists'
+      parameters:
+        - in: query
+          name: rating
+          description: 'Filter by rating range'
+          schema:
+            type: string
+            example: 1,10
+        - in: query
+          name: date
+          description: 'Filter out results older than the specified date'
+          schema:
+            type: string
+            example: 20-02-2002
+        - in: query
+          name: search
+          description: 'Filter by keywords'
+          schema:
+            type: string
+        - in: query
+          name: owner
+          description: 'Filter by owner'
+          schema:
+            type: string
+        - in: query
+          name: public
+          description: 'Filter by public/private'
+          schema:
+            type: boolean
+        - in: query
+          name: order
+          description: 'Order the results'
+          schema:
+            type: string
+            enum:
+              - desc
+              - asc
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/list'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Lists
+      summary: 'Insert a new list in the database'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Info:
+                  $ref: '#/components/schemas/info'
+                Owner:
+                  type: number
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}':
+    get:
+      tags:
+        - Single List
+      summary: 'Returns the info of the list matching the provided id'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List
+      summary: 'Update the selected list''s fields in the database'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Info:
+                  $ref: '#/components/schemas/info'
+                Owner:
+                  type: number
+                IsPublic:
+                  type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Single List
+      summary: 'Delete the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/rating':
+    post:
+      tags:
+        - Single List
+      summary: 'Add a rating to the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Rating:
+                  type: number
+                  description: 'Rating integer'
+                  example: 5
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/movies':
+    post:
+      tags:
+        - Single List - Movies
+      summary: 'Add a movie to the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Movies:
+                  type: number
+                  description: 'Single movie ID'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/movies/{movieID}':
+    delete:
+      tags:
+        - Single List - Movies
+      summary: 'Delete the selected movie ID form the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+        - $ref: '#/components/parameters/movieId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/series':
+    post:
+      tags:
+        - Single List - Series
+      summary: 'Add a series to the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Series:
+                  type: number
+                  description: 'Single series ID'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/series/{seriesID}':
+    delete:
+      tags:
+        - Single List - Series
+      summary: 'Delete the selected series ID form the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+        - $ref: '#/components/parameters/seriesId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/users':
+    post:
+      tags:
+        - Single List - Users
+      summary: 'Add an user to the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Series:
+                  type: number
+                  description: 'Single user ID'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/users/{userID}':
+    delete:
+      tags:
+        - Single List - Users
+      summary: 'Delete the selected user ID form the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+components:
+  responses:
+    Ok:
+      description: 'Ok'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/list'
+    Deleted:
+      description: 'Deleted'
+    BadRequest:
+      description: 'Bad Request'
+    ServerError:
+      description: 'Internal server error'
+    NotFound:
+      description: 'Requested resource not found'
+  parameters:
+    userId:
+      in: path
+      name: userID
+      description: 'The user ID'
+      required: true
+      schema:
+        type: number
+        minimum: 1
+    seriesId:
+      in: path
+      name: seriesID
+      description: 'The series ID'
+      required: true
+      schema:
+        type: number
+        minimum: 1
+    movieId:
+      in: path
+      name: movieID
+      description: 'The movie ID'
+      required: true
+      schema:
+        type: number
+        minimum: 1
+    listId:
+      in: path
+      name: listID
+      description: 'The list ID'
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+  schemas:
+    info:
+      description: 'All information related to the selected list'
+      properties:
+        Title:
+          type: string
+          description: 'The list title'
+          example: 'My Favourite Movies'
+        Image:
+          type: string
+          description: 'The absolute path to the image'
+          example: '/media/myImage.png'
+        Description:
+          type: string
+          description: 'Short description provided by the owner'
+          example: 'My favourite movies for the last 10 years'
+    list:
+      properties:
+        ID:
+          type: number
+          description: 'Unique identifies assigned to the list'
+        Info:
+          description: 'All information related to the selected list'
+          properties:
+            Title:
+              type: string
+              description: 'The list title'
+              example: 'My Favourite Movies'
+            Image:
+              type: string
+              description: 'The absolute path to the image'
+              example: '/media/myImage.png'
+            Description:
+              type: string
+              description: 'Short description provided by the owner'
+              example: 'My favourite movies for the last 10 years'
+        Owner:
+          type: number
+          description: 'The list owner''s user id'
+        IsPublic:
+          type: boolean
+          description: 'If true the list can only be seen by the owner'
+        Movies:
+          type: array
+          items:
+            type: number
+            example: '[id, id, ...]'
+            description: 'All the movies'' ids listed'
+        Series:
+          type: array
+          items:
+            type: number
+            example: '[id, id, ...]'
+            description: 'All the series'' ids listed'
+        Users:
+          type: array
+          items:
+            type: number
+            example: '[id, id, ...]'
+            description: 'All the users'' ids of people who follow the list'
+        Rating:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+          description: 'List rating by comunity'
+        CreationDate:
+          type: number
+          example: 1544208222
+          description: 'Timestamp of the creation date'
+        UpdateDate:
+          type: number
+          example: 1544208222
+          description: 'Timestamp of the last time the list was updated'
+      required:
+        - Owner
