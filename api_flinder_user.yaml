@@ -74,7 +74,6 @@ paths:
                 items: 
                   $ref: "#/components/schemas/User"
         "204":
-          content:
           description: "No content"
         "400":
           $ref: "#/components/responses/BadRequest"
@@ -84,34 +83,34 @@ paths:
       tags:
         - Usuarios
       summary: "Insert a new User"
-      parameters:
-        - in: body
-          required: true
-          name: body
-          schema:
-            type: object
-            properties:
-              username:
-                type: string
-                example: PepitoPerez
-              firstname:
-                type: string
-                example: Pepito
-              lastname:
-                type: string
-                example: Pérez
-              email:
-                type: string
-                example: pepito@perez.com
-              birthday:
-                type: string
-                format: date-time
-              city:
-                type: string
-                example: Madrid
-              country:
-                type: string
-                example: España
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: PepitoPerez
+                firstname:
+                  type: string
+                  example: Pepito
+                lastname:
+                  type: string
+                  example: Pérez
+                email:
+                  type: string
+                  example: pepito@perez.com
+                birthday:
+                  type: string
+                  format: date-time
+                city:
+                  type: string
+                  example: Madrid
+                country:
+                  type: string
+                  example: España
       responses:
         "201":
           $ref: "#/components/responses/Ok"
@@ -119,7 +118,7 @@ paths:
           $ref: "#/components/responses/BadRequest"
         "500":
           $ref: "#/components/responses/ServerError"
-  "/users/{:userId}":
+  "/users/{userID}":
     get:
       tags: 
         -  Usuario único
@@ -194,26 +193,32 @@ paths:
           $ref: "#/components/responses/ServerError"
   "/users/{userID}/favourites":
     get:
+      tags:
+        - Usuario único
       summary: "Returns User's Favourites"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
-        "200":
+        200:
+          description: Ok
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Favourites"
-        "404":
+        404:
           $ref: "#/components/responses/NotFound"
-        "500":
+        500:
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/series":
+  "/users/{userID}/series":
     get:
+      tags:
+        - Usuario único 
       summary: "Returns User's Series"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
+          description: Ok
           content:
             application/json:
               schema:
@@ -222,13 +227,16 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/lists":
+  "/users/{userID}/lists":
     get:
+      tags:
+        - Usuario único
       summary: "Returns User's Lists"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
+          description: Ok
           content:
             application/json:
               schema:
@@ -237,13 +245,16 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/chats":
+  "/users/{userID}/chats":
     get:
+      tags:
+        - Usuario único
       summary: "Returns User's Chats"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
+          description: Ok
           content:
             application/json:
               schema:
@@ -252,13 +263,16 @@ paths:
           $ref: "#/components/responses/NotFound"
         "500":
           $ref: "#/components/responses/ServerError"
-  "/users/{userId}/movies":
+  "/users/{userID}/movies":
     get:
+      tags:
+        - Usuario único
       summary: "Returns User's Movies"
       parameters:
         - $ref: "#/components/parameters/userId"
       responses:
         "200":
+          description: Ok
           content:
             application/json:
               schema:
