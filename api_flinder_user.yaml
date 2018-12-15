@@ -560,41 +560,41 @@ components:
       description: "User Favourites"
       type: array
       items:
-        type: number
+        type: string
         example: "[mediaId, mediaId, mediaId, ...]"
         description: "All user's favourites"
     Series:
       description: "User Series"
       type: array
       items:
-        type: number
+        type: string
         example: "[serieId, serieId, serieId, ...]"
         description: "All user's series"
     Lists:
       description: "User Lists"
       type: array
       items:
-        type: number
+        type: string
         example: "[listId, listId, listId, ...]"
         description: "All user lists"
     Chats:
       description: "User Chats"
       type: array
       items:
-        type: number
+        type: string
         example: "[chatId, chatId, chatId, ...]"
         description: "All user's chats"
     Matches:
       description: "User Chats"
       type: array
       items:
-        type: number
+        type: string
         example: "[matchId, matchId, matchId, ...]"
         description: "All user matches"
     Movies:
       description: "User Movies"
       type: array
       items:
-        type: number
+        type: string
         example: "[movieId, movieId, movieId, ...]"
         description: "All user's movies"
