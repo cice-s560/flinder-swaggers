@@ -1,0 +1,614 @@
+openapi: 3.0.0
+info:
+  title: "Flinder"
+  description: "Definición de la entidad User"
+  version: 1.0.0
+
+servers:
+  - url: "http://localhost:4200"
+    description: "Development server"
+
+paths:
+  "/singin":
+    post:
+      summary: "User Sign In and return the Token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: "User email"
+                  example: "javimuruzabal@hotmail.com"
+                password:
+                  type: string
+                  description: "User password"
+                  example: "******"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "uhehrioiqwefhoqwhvpouqvuogwqhe0ihw0ovewgwg"
+
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users":
+    get:
+      summary: "Return all Users"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "All Media in Common"
+                example: "[{id: 1, userName: Javi, userLastName: Muruzabal... },...]"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    post:
+      summary: "Insert a new User"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Email:
+                  type: string
+                  description: "User email"
+                  example: "javimuruzabal@hotmail.com"
+                Password:
+                  type: string
+                  description: "User password"
+                  example: "******"
+      responses:
+        "200":
+          $ref: "#/components/responses/Ok"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{:userId}":
+    get:
+      summary: "Returns all infoarmation of the selected User"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Ok"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+        "404": 
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    put:
+      summary: "Updates the User info"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Info:
+                  $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          $ref: "#/components/responses/Ok"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      summary: "Delete the selected User"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/recent":
+    put:
+      summary: "Update the recent media watch/listen by User"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                Info:
+                  $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          $ref: "#/components/responses/Ok"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+    delete:
+      summary: "Delete the selected User"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          $ref: "#/components/responses/Deleted"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/info":
+    get:
+      summary: "Returns User's Information"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/matches":
+    get:
+      summary: "Returns User's Matches"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserMatches"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/lastGeo":
+    get:
+      summary: "Returns User's Last Localization"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserGeo"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/favourites":
+    get:
+      summary: "Returns User's Favourites"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Favourites"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/series":
+    get:
+      summary: "Returns User's Series"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Series"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/lists":
+    get:
+      summary: "Returns User's Lists"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lists"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/chats":
+    get:
+      summary: "Returns User's Chats"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Chats"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+  "/users/{userId}/movies":
+    get:
+      summary: "Returns User's Movies"
+      parameters:
+        - $ref: "#/components/parameters/userId"
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movies"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+components:
+  responses:
+    Ok:
+      description: "Ok"
+    Deleted:
+      description: "Deleted"
+    BadRequest:
+      description: "Bad Request"
+    ServerError:
+      description: "Internal server error"
+    NotFound:
+      description: "Requested resource not found"
+  parameters:
+    userId:
+      in: path
+      name: userID
+      description: "The user ID"
+      required: true
+      schema:
+        type: number
+        minimum: 1
+  schemas:
+    User:
+      properties:
+        ID:
+          type: number
+          description: "User Identifier"
+        Info:
+          description: "All information related to the selected list"
+          properties:
+            UserName:
+              type: string
+              description: "User nick name"
+              example: "Javi"
+            FirstName:
+              type: string
+              description: "User name"
+              example: "Javi"
+            LastName:
+              type: string
+              description: "User Surname"
+              example: "Muruzábal"
+            Email:
+              type: string
+              description: "User email"
+              example: "javimuruzabal@hotmail.com"
+            Birthday:
+              type: string
+              description: "User birthday"
+              example: "14-06-2000"
+            PostalCode:
+              type: number
+              description: "User ZIP Code Residency"
+              example: "31500"
+            City:
+              type: number
+              description: "User City"
+              example: "Pamplona"
+            Country:
+              type: number
+              description: "User Country"
+              example: "Spain"
+            Address:
+              type: number
+              description: "User Address"
+              example: "Mayor Street"
+            Gender:
+              type: number
+              description: "User Gender"
+              example: "Male"
+            Phone:
+              type: number
+              description: "User Phone"
+              example: "666666666"
+            Image:
+              type: number
+              description: "User Profile Image"
+              example: "profile.png"
+          required:
+            - ID
+        Auth:
+          description: "Fields for User's Auth"
+          properties:
+            Token:
+              type: string
+              description: "Token generated when the User Signs In"
+              example: "vouwebfvwpiergboutcaiusc734t23j4ltbgo"
+            RefreshToken:
+              type: number
+              description: "Number of hours to refresh the Token"
+              example: 24
+            Password:
+              type: string
+              description: "Password defined by User to Sign In"
+              example: "*****"
+        LastLogin:
+          type: number
+          description: "Timestamp of User's Last Connection"
+          example: 16534935935
+        CreationDate:
+          type: number
+          description: "Timestamp of User's Sign Up"
+          example: 16534935935
+        UpdateDate:
+          type: number
+          description: "Timestamp of User's profile update"
+          example: 16534932235
+        MatchesCriteria:
+          description: "Matches Criteria"
+          properties:
+            Age:
+              type: number
+              description: "Age Of Match User"
+              example: 30
+            Gender:
+              type: string
+              description: "Gender Of Match User"
+              example: "Female"
+            Distance:
+              type: number
+              description: "Distance on Km of Match User"
+              example: 3
+            Favourites:
+              type: array
+              items:
+                type: number
+                description: "All Media in Common"
+                example: "[id, id, id...]"
+        LastGeo:
+          description: "Last Geo"
+          properties:
+            Latitude:
+              type: number
+              example: -104.53
+            Longitude:
+              type: number
+              example: 99.04
+        Favourites:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Favourites"
+        Series:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Series"
+        Lists:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Lists"
+        Chats:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Chats"
+        Matches:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Matches"
+        Movies:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "User Movies"
+      required:
+        - ID
+    UserInfo:
+      description: "All information related to the selected list"
+      properties:
+        UserName:
+          type: string
+          description: "User nick name"
+          example: "JaviMuru"
+        FirstName:
+          type: string
+          description: "User name"
+          example: "Javi"
+        LastName:
+          type: string
+          description: "User Surname"
+          example: "Muruzábal"
+        Email:
+          type: string
+          description: "User email"
+          example: "javimuruzabal@hotmail.com"
+        Birthday:
+          type: string
+          description: "User birthday"
+          example: "14-06-2000"
+        PostalCode:
+          type: number
+          description: "User ZIP Code Residency"
+          example: "31500"
+        City:
+          type: number
+          description: "User City"
+          example: "Pamplona"
+        Country:
+          type: number
+          description: "User Country"
+          example: "Spain"
+        Address:
+          type: number
+          description: "User Address"
+          example: "Mayor Street"
+        Gender:
+          type: number
+          description: "User Gender"
+          example: "Male"
+        Phone:
+          type: number
+          description: "User Phone"
+          example: "666666666"
+        Image:
+          type: number
+          description: "User Profile Image"
+          example: "profile.png"
+    UserAuth:
+      description: "All information related User Auth"
+      properties:
+        Token:
+          type: string
+          description: "Token generated when the User Signs In"
+          example: "vouwebfvwpiergboutcaiusc734t23j4ltbgo"
+        RefreshToken:
+          type: number
+          description: "Number of hours to refresh the Token"
+          example: 24
+        Password:
+          type: string
+          description: "Password defined by User to Sign In"
+          example: "*****"
+    UserMatches:
+      description: "All information related User Matches"
+      type: array
+      items:
+        type: object
+        properties:
+          Age:
+            type: number
+            description: "Age Of Match User"
+            example: 30
+          Gender:
+            type: string
+            description: "Gender Of Match User"
+            example: "Female"
+          Distance:
+            type: number
+            description: "Distance on Km of Match User"
+            example: 3
+          Favourites:
+            type: array
+            items:
+              type: number
+              description: "All Media in Common"
+              example: "[mediaId, mediaId, mediaId, ...]"
+    UserGeo:
+      description: "All information related User LastGeo"
+      type: object
+      properties:
+        Latitude:
+          type: number
+          example: -104.53
+        Longitude:
+          type: number
+          example: 99.04
+    Favourites:
+      description: "User Favourites"
+      type: array
+      items:
+        type: number
+        example: "[mediaId, mediaId, mediaId, ...]"
+        description: "All user's favourites"
+    Series:
+      description: "User Series"
+      type: array
+      items:
+        type: number
+        example: "[serieId, serieId, serieId, ...]"
+        description: "All user's series"
+    Lists:
+      description: "User Lists"
+      type: array
+      items:
+        type: number
+        example: "[listId, listId, listId, ...]"
+        description: "All user lists"
+    Chats:
+      description: "User Chats"
+      type: array
+      items:
+        type: number
+        example: "[chatId, chatId, chatId, ...]"
+        description: "All user's chats"
+    Matches:
+      description: "User Chats"
+      type: array
+      items:
+        type: number
+        example: "[matchId, matchId, matchId, ...]"
+        description: "All user matches"
+    Movies:
+      description: "User Movies"
+      type: array
+      items:
+        type: number
+        example: "[movieId, movieId, movieId, ...]"
+        description: "All user's movies"
