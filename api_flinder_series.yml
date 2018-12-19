@@ -1,0 +1,618 @@
+openapi: 3.0.0
+info:
+  title: "Flinder API (SERIES)"
+  description: "API documentation for the system, this model belongs to the entity Series"
+  version: 1.0.0
+
+servers:
+  - url: "http://localhost:3000"
+    description: "Development server"
+
+tags:
+  - name: Series
+  - name: Serie única
+
+paths:
+
+  "/series":
+
+    get:
+      tags:
+      - "Series"
+      summary: "get all series"
+      parameters:
+        - in: query
+          name: duration
+          description: Duration of the serie in seconds
+          schema:
+            type: number
+        - in: query
+          name: title
+          description: The title
+          schema:
+            type: string
+        - in: query
+          name: release_date
+          description: The release date
+          schema:
+            type: string
+        - in: query
+          name: director
+          description: Director´s name
+          schema:
+            type: string
+        - in: query
+          name: country
+          description: Country of origin of the series
+          schema:
+            type: string
+        - in: query
+          name: image
+          description: A binary file, in base64 or a url up to 10mb
+          schema: 
+            type: string
+        - in: query
+          name: description
+          description: Short descriptive text about the film (300 characters maximum)
+          schema:
+            type: string
+        - in: query
+          name: genre
+          description: Filmographic genre of the series
+          schema:
+            type: string
+        - in: query
+          name: company
+          description: Audiovisual production company associated with the series
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Succesful
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "New serie successfully included"
+                items: 
+                  $ref: "#/components/schemas/Series"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+
+    post:
+      tags:
+        - "Series"
+      summary: "Add a new serie"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                duration:
+                  type: number
+                  example: 2451
+                title:
+                  type: string
+                  example: Dark Soul
+                Release Date:
+                  type: string
+                  format: date-time
+                director:
+                  type: string
+                  example: Robert Rodriguez
+                Country:
+                  type: string
+                  format: USA
+                image:
+                  type: string
+                  example: /url
+                description:
+                  type: string
+                  example: The serie tells the story...
+                genre:
+                  type: string
+                  example: Terror
+                company:
+                  type: string
+                  example: 20th century fox
+      responses:
+        "201":
+          $ref: "#/components/responses/Succesful"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+
+  "/series/{serieId}":
+    get:
+      tags:
+      - "Serie única"
+      summary: "Get the serie with a ID"
+      parameters:
+      - in: "path"
+        name: "serieId"
+        description: "Serie ID to get"
+        required: true
+        schema:
+          $ref: "#/components/schemas/Series"
+      responses:
+        "200":
+          description: Succesful
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "Serie get"
+                items: 
+                  $ref: "#/components/schemas/Series"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    delete:
+      tags:
+      - "Serie única"
+      summary: "Delete a serie with ID"
+      parameters:
+      - name: "serieId"
+        in: "path"
+        description: "Serie ID to delete"
+        required: true
+        schema:
+          $ref: "#/components/schemas/Series"
+      responses:
+        "200":
+          description: Succesful
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "Serie deleted"
+                items: 
+                  $ref: "#/components/schemas/Series"
+        "400":
+          description: "Invalid ID supplied"
+        "500":
+          $ref: "#/components/responses/ServerError"
+
+    patch:
+      tags:
+      - "Serie única"
+      summary: "Update a serie with a ID"
+      description: ""
+      parameters:
+      - name: "serieId"
+        in: "path"
+        description: "Id of the serie to update"
+        required: true
+        schema:
+          $ref: "#/components/schemas/Series"
+      responses:
+        "200":
+          description: Succesful
+          content:
+            application/json:
+              schema:
+                type: array
+                description: "Serie updated"
+                items: 
+                  $ref: "#/components/schemas/Series"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/ServerError"
+      
+
+  "/series/{serieID}/rating":
+    get:
+      tags:
+        - Serie única
+      summary: "Return a rating of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Rating returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+  "/series/{serieID}/users":
+    get:
+      tags:
+        - Serie única
+      summary: "Return all id users of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Id users returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Users"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+  "/series/{serieID}/lists":
+    get:
+      tags:
+        - Serie única
+      summary: "Return all id lists where the serie with ID appears"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Id lists returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lists"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+  "/series/{serieID}/trailerurl":
+    get:
+      tags:
+        - Serie única
+      summary: "Return a url of trailer of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Url returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrailerUrl"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+  "/series/{serieID}/playurl":
+    get:
+      tags:
+        - Serie única
+      summary: "Return a url of first episode of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Url returned"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlayUrl"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+
+  "/series/{serieID}/seasons":
+    get:
+      tags:
+        - Serie única
+      summary: "Return the total númber of seasons of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Númber of seasons"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Seasons"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+  "/series/{serieID}/episodes":
+    get:
+      tags:
+        - Serie única
+      summary: "Return the total númber of episodes of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Number of episodes"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Episodes"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+
+  "/series/{serieID}/creationdate":
+    get:
+      tags:
+        - Serie única
+      summary: "Return the creation date of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Creation date"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationDate"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+
+  "/series/{serieID}/updatedate":
+    get:
+      tags:
+        - Serie única
+      summary: "Return the last update date of the serie with ID"
+      parameters:
+        - $ref: "#/components/parameters/serieId"
+      responses:
+        200:
+          description: "Update date"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreationDate"
+        404:
+          $ref: "#/components/responses/NotFound"
+        500:
+          $ref: "#/components/responses/ServerError"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+components:
+  schemas:
+    
+    Series:
+      properties:
+        ID:
+          type: number
+          description: "Serie unique ID"
+        Info:
+          description: "All information related to the selected serie"
+          properties:
+            duration:
+              type: number
+              description: "Lenght of the serie in seconds"
+              example: 232342
+
+            title:
+              type: string
+              description: "Title of the serie"
+              example: "Title of the serie"
+
+            release_date:
+              type: string
+              format: date-time
+              description: "Release date"
+              example: "2018-12-17"
+
+            director:
+              type: string
+              description: "Director´s name"
+              example: "Carlos Saura"
+
+            country:
+              type: string
+              description: "Country of origin"
+              example: "Spain"
+
+            image:
+              type: string
+              description: Binary file, base64 encoded string or url (up to 10mb)
+              example: "../images/series/serie204225"
+
+            description:
+              type: string
+              description: Short text for description of the serie (300 character máx)
+              example: "lorem ipsum dolor sit amet"
+
+            genre:
+              type: string
+              description: Genre of the serie
+              example: "Terror"
+
+            company:
+              type: string
+              description: Producer company
+              example: "20th century fox"
+        
+        Rating:
+          description: "Rate of the serie"
+          type: string
+          example: 9.5
+
+        Users:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "Users series"
+
+        Lists:
+          type: array
+          items:
+            type: number
+            example: "[id, id, ...]"
+            description: "List series"
+
+        TrailerUrl:
+          type: string
+          description: "Url of the trailer of the serie"
+          example: "http://url..."
+
+        PlayUrl:
+          type: string
+          description: "Access URL of the serie"
+          example: "http://url..."
+
+        Seasons:
+          type: array
+          items:
+            type: number
+            example: "[seasonId, seasonId, ...]"
+            description: "Seasons IDs from serie"
+
+        Episodes:
+          type: array
+          items:
+            type: number
+            example: "[episodeId, episodeId, ...]"
+            description: "Episodes IDs from serie"
+
+        CreationDate:
+          type: string
+          description: Creation date of the serie
+          example: "2018-02-21"
+
+        UpdateDate:
+          type: string
+          description: Update date of the serie
+          example: "2018-02-21"
+          
+      required:
+        - ID
+    
+    Rating:
+      description: "Rating of the serie"
+      properties:
+        Rating:
+          type: string
+          example: "9.5"
+          
+    Users:
+      description: "Users of the serie"
+      properties:
+        Users:
+          type: array
+          example: "[idUser, idUser, ...]"          
+    Lists:
+      description: "Lists where the serie appears"
+      properties:
+        Users:
+          type: array
+          example: "[idList, idList, ...]" 
+          
+    TrailerUrl:
+      description: "Url of the serie with ID"
+      properties:
+        Users:
+          type: string
+          example: "series/{:serieID}/trailer/file"
+    
+    PlayUrl:
+      description: "Url from serie"
+      properties:
+        Rating:
+          type: string
+          example: "series/{:serieID}/playurl/file"
+            
+    Seasons:
+      description: "Seasons of the serie"
+      properties:
+        Rating:
+          type: string
+          example: "4"
+                      
+    Episodes:
+      description: "Episodes of the serie"
+      properties:
+        Rating:
+          type: string
+          example: "56"
+                                
+    CreationDate:
+      description: "Date of creation of the serie"
+      properties:
+        Rating:
+          type: string
+          example: "04-10-2012"                                
+    
+    UpdateDate:
+      description: "Date of the last update of the serie"
+      properties:
+        Rating:
+          type: string
+          example: "04-10-2012"
+          
+          
+  parameters:
+    serieId:
+      in: path
+      name: serieID
+      description: "The serie ID"
+      required: true
+      schema:
+        type: number
+        minimum: 1
+    
+    
+  responses:
+    Succesful:
+      description: "Succesful"
+    Deleted:
+      description: "Deleted"
+    BadRequest:
+      description: "Bad Request"
+    ServerError:
+      description: "Internal server error"
+    NotFound:
+      description: "Requested resource not found"
