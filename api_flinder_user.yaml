@@ -90,6 +90,10 @@ paths:
             schema:
               type: object
               properties:
+                gender:
+                  type: string
+                  enum: [Male, Female, Other]
+                  example: Male
                 username:
                   type: string
                   example: PepitoPerez
@@ -111,6 +115,21 @@ paths:
                 country:
                   type: string
                   example: España
+                phone:
+                  type: string
+                  example: +3476576576876
+                address:
+                  type: string
+                  example: C/ Lombarda
+              required:
+                - lastname
+                - firtname
+                - username
+                - email
+                - birthday
+                - gender
+                - city
+                - country
       responses:
         "201":
           $ref: "#/components/responses/Ok"
@@ -348,9 +367,10 @@ components:
               description: "User Address"
               example: "Mayor Street"
             Gender:
-              type: number
+              type: string
               description: "User Gender"
               example: "Male"
+              enum: [Male, Female, Other]
             Phone:
               type: number
               description: "User Phone"
@@ -377,7 +397,8 @@ components:
               description: "Password defined by User to Sign In"
               example: "*****"
         LastLogin:
-          type: number
+          type: string
+          format: date-time
           description: "Timestamp of User's Last Connection"
           example: 16534935935
         CreationDate:
