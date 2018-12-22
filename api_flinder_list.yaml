@@ -16,17 +16,15 @@ paths:
       summary: 'Returns all the lists'
       parameters:
         - in: query
-          name: rating
-          description: 'Filter by rating range'
+          name: popular
+          description: 'Get the most popular lists'
           schema:
-            type: string
-            example: 1,10
+            type: boolean
         - in: query
-          name: date
-          description: 'Filter out results older than the specified date'
+          name: recent
+          description: 'Get the most recent lists'
           schema:
-            type: string
-            example: 20-02-2002
+            type: boolean
         - in: query
           name: search
           description: 'Filter by keywords'
@@ -74,12 +72,12 @@ paths:
             schema:
               type: object
               properties:
-                Info:
+                info:
                   $ref: '#/components/schemas/info'
-                Owner:
+                owner:
                   type: number
       responses:
-        '200':
+        '201':
           $ref: '#/components/responses/Ok'
         '400':
           $ref: '#/components/responses/BadRequest'
@@ -112,11 +110,11 @@ paths:
             schema:
               type: object
               properties:
-                Info:
+                info:
                   $ref: '#/components/schemas/info'
-                Owner:
+                owner:
                   type: number
-                IsPublic:
+                ispublic:
                   type: boolean
       responses:
         '200':
@@ -156,9 +154,9 @@ paths:
             schema:
               type: object
               properties:
-                Rating:
+                rating:
                   type: number
-                  description: 'Rating integer'
+                  description: 'rating integer'
                   example: 5
       responses:
         '200':
@@ -170,10 +168,29 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
   '/lists/{listID}/movies':
-    post:
+    get:
       tags:
         - Single List - Movies
-      summary: 'Add a movie to the selected list'
+      summary: 'Get the movies registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movies'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Movies
+      summary: 'Update the movies registered in the list'
       parameters:
         - $ref: '#/components/parameters/listId'
       requestBody:
@@ -181,31 +198,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                Movies:
-                  type: number
-                  description: 'Single movie ID'
+              $ref: '#/components/schemas/movies'
       responses:
         '200':
           $ref: '#/components/responses/Ok'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  '/lists/{listID}/movies/{movieID}':
-    delete:
-      tags:
-        - Single List - Movies
-      summary: 'Delete the selected movie ID form the list'
-      parameters:
-        - $ref: '#/components/parameters/listId'
-        - $ref: '#/components/parameters/movieId'
-      responses:
-        '200':
-          $ref: '#/components/responses/Deleted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -213,10 +209,29 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
   '/lists/{listID}/series':
-    post:
+    get:
       tags:
         - Single List - Series
-      summary: 'Add a series to the selected list'
+      summary: 'Get the series registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/series'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Series
+      summary: 'Update the series registered in the list'
       parameters:
         - $ref: '#/components/parameters/listId'
       requestBody:
@@ -224,31 +239,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                Series:
-                  type: number
-                  description: 'Single series ID'
+              $ref: '#/components/schemas/series'
       responses:
         '200':
           $ref: '#/components/responses/Ok'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  '/lists/{listID}/series/{seriesID}':
-    delete:
-      tags:
-        - Single List - Series
-      summary: 'Delete the selected series ID form the list'
-      parameters:
-        - $ref: '#/components/parameters/listId'
-        - $ref: '#/components/parameters/seriesId'
-      responses:
-        '200':
-          $ref: '#/components/responses/Deleted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -256,10 +250,29 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
   '/lists/{listID}/users':
-    post:
+    get:
       tags:
         - Single List - Users
-      summary: 'Add an user to the selected list'
+      summary: 'Get the users that contributed to the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Users
+      summary: 'Update the users that contributed to the list'
       parameters:
         - $ref: '#/components/parameters/listId'
       requestBody:
@@ -267,31 +280,10 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                Series:
-                  type: number
-                  description: 'Single user ID'
+              $ref: '#/components/schemas/users'
       responses:
         '200':
           $ref: '#/components/responses/Ok'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/ServerError'
-  '/lists/{listID}/users/{userID}':
-    delete:
-      tags:
-        - Single List - Users
-      summary: 'Delete the selected user ID form the list'
-      parameters:
-        - $ref: '#/components/parameters/listId'
-        - $ref: '#/components/parameters/userId'
-      responses:
-        '200':
-          $ref: '#/components/responses/Deleted'
         '400':
           $ref: '#/components/responses/BadRequest'
         '404':
@@ -316,27 +308,6 @@ components:
     NotFound:
       description: 'Requested resource not found'
   parameters:
-    userId:
-      in: path
-      name: userID
-      description: 'The user ID'
-      required: true
-      schema:
-        type: string
-    seriesId:
-      in: path
-      name: seriesID
-      description: 'The series ID'
-      required: true
-      schema:
-        type: string
-    movieId:
-      in: path
-      name: movieID
-      description: 'The movie ID'
-      required: true
-      schema:
-        type: string
     listId:
       in: path
       name: listID
@@ -348,75 +319,102 @@ components:
     info:
       description: 'All information related to the selected list'
       properties:
-        Title:
+        title:
           type: string
           description: 'The list title'
-          example: 'My Favourite Movies'
-        Image:
+          example: 'My Favourite movies'
+        image:
           type: string
           description: 'The absolute path to the image'
-          example: '/media/myImage.png'
-        Description:
+          example: '/media/myimage.png'
+        description:
           type: string
           description: 'Short description provided by the owner'
           example: 'My favourite movies for the last 10 years'
-    list:
+    movies:
+      description: 'Movies registered in the list'
       properties:
-        ID:
-          type: string
-          description: 'Unique identifies assigned to the list'
-        Info:
-          description: 'All information related to the selected list'
-          properties:
-            Title:
-              type: string
-              description: 'The list title'
-              example: 'My Favourite Movies'
-            Image:
-              type: string
-              description: 'The absolute path to the image'
-              example: '/media/myImage.png'
-            Description:
-              type: string
-              description: 'Short description provided by the owner'
-              example: 'My favourite movies for the last 10 years'
-        Owner:
-          type: string
-          description: 'The list owner''s user id'
-        IsPublic:
-          type: boolean
-          description: 'If true the list can only be seen by the owner'
-        Movies:
+        movies:
           type: array
           items:
             type: string
             example: '[id, id, ...]'
             description: 'All the movies'' ids listed'
-        Series:
+    series:
+      description: 'Series registered in the list'
+      properties:
+        series:
           type: array
           items:
             type: string
             example: '[id, id, ...]'
             description: 'All the series'' ids listed'
-        Users:
+    users:
+      description: 'Users that contributed to the list'
+      properties:
+        users:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the ids from users who contributed to the list'
+    list:
+      properties:
+        ID:
+          type: string
+          description: 'Unique identifies assigned to the list'
+        info:
+          description: 'All information related to the selected list'
+          properties:
+            title:
+              type: string
+              description: 'The list title'
+              example: 'My Favourite movies'
+            image:
+              type: string
+              description: 'The absolute path to the image'
+              example: '/media/myimage.png'
+            description:
+              type: string
+              description: 'Short description provided by the owner'
+              example: 'My favourite movies for the last 10 years'
+        owner:
+          type: string
+          description: 'The list owner''s user id'
+        ispublic:
+          type: boolean
+          description: 'If true the list can only be seen by the owner'
+        movies:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the movies'' ids listed'
+        series:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the series'' ids listed'
+        users:
           type: array
           items:
             type: string
             example: '[id, id, ...]'
             description: 'All the users'' ids of people who follow the list'
-        Rating:
+        rating:
           type: number
           example: 5
           minimum: 1
           maximum: 10
           description: 'List rating by comunity'
-        CreationDate:
+        creationdate:
           type: number
           example: 1544208222
           description: 'Timestamp of the creation date'
-        UpdateDate:
+        updatedate:
           type: number
           example: 1544208222
           description: 'Timestamp of the last time the list was updated'
       required:
-        - Owner
+        - owner
