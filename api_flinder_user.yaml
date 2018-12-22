@@ -10,6 +10,8 @@ servers:
 tags:
   - name: Usuarios
   - name: Usuario único
+security:
+  - BasicAuth: []
 
 paths:
   "/users":
@@ -301,6 +303,10 @@ paths:
         "500":
           $ref: "#/components/responses/ServerError"
 components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
   responses:
     Ok:
       description: "Ok"
