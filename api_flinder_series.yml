@@ -12,6 +12,9 @@ tags:
   - name: Series
   - name: Serie única
 
+security:
+  - basicAuth: []
+
 paths:
 
   "/series":
@@ -20,6 +23,7 @@ paths:
       tags:
       - "Series"
       summary: "get all series"
+      security: []
       parameters:
         - in: query
           name: duration
@@ -129,6 +133,7 @@ paths:
       tags:
       - "Serie única"
       summary: "Get the serie with a ID"
+      security: []
       parameters:
       - in: "path"
         name: "serieId"
