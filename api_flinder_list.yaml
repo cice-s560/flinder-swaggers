@@ -1,0 +1,420 @@
+openapi: 3.0.0
+info:
+  title: 'Flinder'
+  description: 'Flinder is what happens when there are no girls in the classroom'
+  version: 1.0.0
+  
+servers:
+  - url: 'http://localhost:4200/v1'
+    description: 'Development server'
+    
+paths:
+  '/lists':
+    get:
+      tags:
+        - Lists
+      summary: 'Returns all the lists'
+      parameters:
+        - in: query
+          name: popular
+          description: 'Get the most popular lists'
+          schema:
+            type: boolean
+        - in: query
+          name: recent
+          description: 'Get the most recent lists'
+          schema:
+            type: boolean
+        - in: query
+          name: search
+          description: 'Filter by keywords'
+          schema:
+            type: string
+        - in: query
+          name: owner
+          description: 'Filter by owner'
+          schema:
+            type: string
+        - in: query
+          name: public
+          description: 'Filter by public/private'
+          schema:
+            type: boolean
+        - in: query
+          name: order
+          description: 'Order the results'
+          schema:
+            type: string
+            enum:
+              - desc
+              - asc
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/list'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      tags:
+        - Lists
+      summary: 'Insert a new list in the database'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                info:
+                  $ref: '#/components/schemas/info'
+                owner:
+                  type: number
+      responses:
+        '201':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}':
+    get:
+      tags:
+        - Single List
+      summary: 'Returns the info of the list matching the provided id'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List
+      summary: 'Update the selected list''s fields in the database'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                info:
+                  $ref: '#/components/schemas/info'
+                owner:
+                  type: number
+                ispublic:
+                  type: boolean
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      tags:
+        - Single List
+      summary: 'Delete the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          $ref: '#/components/responses/Deleted'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/rating':
+    post:
+      tags:
+        - Single List
+      summary: 'Add a rating to the selected list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+                  description: 'rating integer'
+                  example: 5
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/movies':
+    get:
+      tags:
+        - Single List - Movies
+      summary: 'Get the movies registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/movies'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Movies
+      summary: 'Update the movies registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/movies'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/series':
+    get:
+      tags:
+        - Single List - Series
+      summary: 'Get the series registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/series'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Series
+      summary: 'Update the series registered in the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/series'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  '/lists/{listID}/users':
+    get:
+      tags:
+        - Single List - Users
+      summary: 'Get the users that contributed to the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      responses:
+        '200':
+          description: 'Ok'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/users'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    patch:
+      tags:
+        - Single List - Users
+      summary: 'Update the users that contributed to the list'
+      parameters:
+        - $ref: '#/components/parameters/listId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/users'
+      responses:
+        '200':
+          $ref: '#/components/responses/Ok'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    
+components:
+  responses:
+    Ok:
+      description: 'Ok'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/list'
+    Deleted:
+      description: 'Deleted'
+    BadRequest:
+      description: 'Bad Request'
+    ServerError:
+      description: 'Internal server error'
+    NotFound:
+      description: 'Requested resource not found'
+  parameters:
+    listId:
+      in: path
+      name: listID
+      description: 'The list ID'
+      required: true
+      schema:
+        type: string
+  schemas:
+    info:
+      description: 'All information related to the selected list'
+      properties:
+        title:
+          type: string
+          description: 'The list title'
+          example: 'My Favourite movies'
+        image:
+          type: string
+          description: 'The absolute path to the image'
+          example: '/media/myimage.png'
+        description:
+          type: string
+          description: 'Short description provided by the owner'
+          example: 'My favourite movies for the last 10 years'
+    movies:
+      description: 'Movies registered in the list'
+      properties:
+        movies:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the movies'' ids listed'
+    series:
+      description: 'Series registered in the list'
+      properties:
+        series:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the series'' ids listed'
+    users:
+      description: 'Users that contributed to the list'
+      properties:
+        users:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the ids from users who contributed to the list'
+    list:
+      properties:
+        ID:
+          type: string
+          description: 'Unique identifies assigned to the list'
+        info:
+          description: 'All information related to the selected list'
+          properties:
+            title:
+              type: string
+              description: 'The list title'
+              example: 'My Favourite movies'
+            image:
+              type: string
+              description: 'The absolute path to the image'
+              example: '/media/myimage.png'
+            description:
+              type: string
+              description: 'Short description provided by the owner'
+              example: 'My favourite movies for the last 10 years'
+        owner:
+          type: string
+          description: 'The list owner''s user id'
+        ispublic:
+          type: boolean
+          description: 'If true the list can only be seen by the owner'
+        movies:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the movies'' ids listed'
+        series:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the series'' ids listed'
+        users:
+          type: array
+          items:
+            type: string
+            example: '[id, id, ...]'
+            description: 'All the users'' ids of people who follow the list'
+        rating:
+          type: number
+          example: 5
+          minimum: 1
+          maximum: 10
+          description: 'List rating by comunity'
+        creationdate:
+          type: number
+          example: 1544208222
+          description: 'Timestamp of the creation date'
+        updatedate:
+          type: number
+          example: 1544208222
+          description: 'Timestamp of the last time the list was updated'
+      required:
+        - owner
